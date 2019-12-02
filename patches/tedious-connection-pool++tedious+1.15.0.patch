@@ -1,0 +1,13 @@
+diff --git a/node_modules/tedious-connection-pool/node_modules/tedious/lib/rpcrequest-payload.js b/node_modules/tedious-connection-pool/node_modules/tedious/lib/rpcrequest-payload.js
+index 58a3e10..eff80aa 100644
+--- a/node_modules/tedious-connection-pool/node_modules/tedious/lib/rpcrequest-payload.js
++++ b/node_modules/tedious-connection-pool/node_modules/tedious/lib/rpcrequest-payload.js
+@@ -92,7 +92,7 @@ module.exports = function () {
+       }
+ 
+       type.writeTypeInfo(buffer, param, options);
+-      type.writeParameterData(buffer, param, options);
++      type.writeParameterData(buffer, param, options, () => {});
+     }
+ 
+     this.data = buffer.data;

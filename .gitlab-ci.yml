@@ -1,0 +1,56 @@
+stages:
+    - deploy
+
+deploy_dev:
+    stage: deploy
+    script:
+        - echo "====== DEPLOY DEV ======"
+        - echo "$DEPLOY_KEY" > ~/.ssh/deploy_dev_key_rsa
+        - chmod 700 ~/.ssh && chmod 600 ~/.ssh/*
+        - echo "Test ssh connection"
+        - ssh -i ~/.ssh/deploy_dev_key_rsa -o StrictHostKeyChecking=no -T "sadmin@10.40.240.101"
+        # Delploy
+        - echo "Setup server directories"
+        - pm2 deploy ecosystem.config.js dev setup 2>&1 || true
+        - echo "make deploy"
+        - pm2 deploy ecosystem.config.js dev
+    environment:
+        name: development
+    only:
+        - dev
+
+deploy_tst:
+    stage: deploy
+    script:
+        - echo "====== DEPLOY TST ======"
+        - echo "$DEPLOY_KEY" > ~/.ssh/deploy_tst_key_rsa
+        - chmod 700 ~/.ssh && chmod 600 ~/.ssh/*
+        - echo "Test ssh connection"
+        - ssh -i ~/.ssh/deploy_tst_key_rsa -o StrictHostKeyChecking=no -T "sadmin@10.40.240.100"
+        # Delploy
+        - echo "Setup server directories"
+        - pm2 deploy ecosystem.config.js tst setup 2>&1 || true
+        - echo "make deploy"
+        - pm2 deploy ecosystem.config.js tst
+    environment:
+        name: testing
+    only:
+        - tst
+
+deploy_staging:
+    stage: deploy
+    script:
+        - echo "====== DEPLOY STAGING ======"
+        - echo "$DEPLOY_KEY" > ~/.ssh/deploy_staging_key_rsa
+        - chmod 700 ~/.ssh && chmod 600 ~/.ssh/*
+        - echo "Test ssh connection"
+        - ssh -i ~/.ssh/deploy_staging_key_rsa -o StrictHostKeyChecking=no -T "sadmin@10.40.251.60"
+        # Delploy
+        - echo "Setup server directories"
+        - pm2 deploy ecosystem.config.js staging setup 2>&1 || true
+        - echo "make deploy"
+        - pm2 deploy ecosystem.config.js staging
+    environment:
+        name: staging
+    only:
+        - master
